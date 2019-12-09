@@ -1,8 +1,8 @@
 ﻿# Cacti v1+ Docker Container
-[![](https://images.microbadger.com/badges/image/smcline06/cacti.svg)](https://microbadger.com/images/smcline06/cacti "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/moellerdi/cacti.svg)](https://microbadger.com/images/moellerdi/cacti "Get your own image badge on microbadger.com")
 
-##### Github Repo: https://github.com/scline/docker-cacti
-##### Dockerhub Repo: https://hub.docker.com/r/smcline06/cacti/
+##### Github Repo: https://github.com/MoellerDi/docker-cacti
+##### Dockerhub Repo: https://hub.docker.com/r/MoellerDi/cacti/
 
 ## Cacti System
 Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides following features:
@@ -187,33 +187,6 @@ REPLACE INTO `%DB_NAME%`.`settings` (`name`, `value`) VALUES('path_spine_config'
 REPLACE INTO `%DB_NAME%`.`settings` (`name`, `value`) VALUES('poller_type', '2');
 ```
 
-# Change Log
-#### 1.2.6a - 10/30/2019
- * Update start.sh to persist Apache Cacti configurations on restart. [#52] (https://github.com/scline/docker-cacti/issues/52)
- * Update docker-compose examples to use different type of volumes so `docker-compose down` will not affect data without the `-v` flag.
-
-#### 1.2.6 - 09/06/2019
- * Update Cacti and Spine from 1.2.0 to 1.2.6
-   * [changelog][cacti_changelog]
- * Removed 1.1.X changelog notes from README.md, this can be located in [CHANGELOG.md](https://github.com/scline/docker-cacti/blob/master/changelog.md)
- * Close Issue [#49](https://github.com/scline/docker-cacti/issues/49) - New version of Spine don't have configure file
- * Close Issue [#45](https://github.com/scline/docker-cacti/issues/45) - Directories backup and backups mixed up; thank you [shortbloke](https://github.com/shortbloke) for [PR #46](https://github.com/scline/docker-cacti/pull/46)
- * Merge [PR #47](https://github.com/scline/docker-cacti/pull/47) and [PR #48](https://github.com/scline/docker-cacti/pull/48) - Add modify PHP env; thank you [joey741019](https://github.com/joey741019)
-
-#### 1.2.0 - 01/06/2019
- * Update Cacti and Spine from 1.1.38 to 1.2.0
-    * [changelog][cacti_changelog]
- * Add sendmail to dockerfile via yum due to cacti 1.2.0 requirements
- * Created separate changlog file for future documentation cleanup
- * Update PHP variable readme to include `max_execution_time` and `memory_limit` changes for 1.2.0
- * Add and Hotfix the PHP variable `max_execution_time` for PHP_MAX_EXECUTION_TIME and `memory_limit` for PHP_MEMORY_LIMIT
-
-# Known Issues/Fixes
-* HTTPS is not setup to work, it may work just understand no testing has been done.
-
-# ToDo
-* Auto import remote pollers, currently you need to navigate to there GUI for a few clicks.
-* Documentation cleanup.
 
 [CL1.2.6]: http://www.cacti.net/release_notes.php?version=1.2.6
 [CL1.2.5]: http://www.cacti.net/release_notes.php?version=1.2.5
