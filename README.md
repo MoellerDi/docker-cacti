@@ -1,5 +1,4 @@
-﻿# Cacti v1+ Docker Container
-[![](https://images.microbadger.com/badges/image/moellerdi/cacti.svg)](https://microbadger.com/images/moellerdi/cacti "Get your own image badge on microbadger.com")
+# Cacti v1.2.x Docker Container
 
 ##### Github Repo: https://github.com/MoellerDi/docker-cacti
 ##### Dockerhub Repo: https://hub.docker.com/r/MoellerDi/cacti/
