@@ -152,3 +152,5 @@ snmpd -Lf /var/log/snmpd.log &
 # start web service
 echo "$(date +%F_%R) [Note] Starting httpd service."
 httpd -DFOREGROUND
+
+echo "$(date +%F_%R) [Note] Docker container is ready."
