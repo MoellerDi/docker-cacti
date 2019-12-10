@@ -150,7 +150,5 @@ echo "$(date +%F_%R) [Note] Starting snmpd service."
 snmpd -Lf /var/log/snmpd.log &
 
 # start web service
-echo "$(date +%F_%R) [Note] Starting httpd service."
+echo "$(date +%F_%R) [Note] Starting httpd service - Docker container is ready."
 httpd -DFOREGROUND
-
-echo "$(date +%F_%R) [Note] Docker container is ready."
