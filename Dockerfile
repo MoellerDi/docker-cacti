@@ -27,8 +27,19 @@ ENV \
 ## --- SUPPORTING FILES ---
 #COPY cacti /cacti_install
 
+
+## --- SCRIPTS ---
+COPY upgrade.sh /upgrade.sh
+COPY restore.sh /restore.sh
+COPY backup.sh /backup.sh
 ## --- CACTI ---
+
 RUN \
+    chmod +x /upgrade.sh && \
+    chmod +x /restore.sh && \
+    chmod +x /backup.sh  && \
+    mkdir /backups && \
+    \
     rpm --rebuilddb && yum clean all && \
     yum update -y && \
     yum install -y \
@@ -38,17 +49,7 @@ RUN \
         autoconf automake gcc gzip help2man libtool make net-snmp-devel \
         m4 libmysqlclient-devel libmysqlclient openssl-devel dos2unix wget \
         sendmail mariadb-devel which && \
-    yum clean all
-
-## --- SCRIPTS ---
-COPY upgrade.sh /upgrade.sh
-COPY restore.sh /restore.sh
-COPY backup.sh /backup.sh
-RUN \
-    chmod +x /upgrade.sh && \
-    chmod +x /restore.sh && \
-    chmod +x /backup.sh  && \
-    mkdir /backups && \
+    yum clean all && \
     \
     echo "Download, extracting and installing Cacti files to /cacti." && \
     mkdir /cacti_install && \
@@ -65,7 +66,13 @@ RUN \
     cd /tmp/spine && ./bootstrap && ./configure --prefix=/spine && make && make install && \
     chown root:root /spine/bin/spine && \
     chmod +s /spine/bin/spine && \
-    rm -rf /tmp/spine
+    rm -rf /tmp/spine && \
+    \
+    echo "Fix cron issues - https://github.com/CentOS/CentOS-Dockerfiles/issues/31" && \
+    sed -i '/session required pam_loginuid.so/d' /etc/pam.d/crond && \
+    \
+    echo "misc setup" && \
+    echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
 
 ## --- SERVICE CONFIGS ---
 COPY configs /template_configs
@@ -74,13 +81,6 @@ COPY configs /template_configs
 COPY plugins /cacti_install/plugins
 COPY templates /templates
 COPY settings /settings
-
-## --- CRON ---
-# Fix cron issues - https://github.com/CentOS/CentOS-Dockerfiles/issues/31
-RUN sed -i '/session required pam_loginuid.so/d' /etc/pam.d/crond
-
-## -- MISC SETUP --
-RUN echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
 
 ## --- Start ---
 COPY start.sh /start.sh
