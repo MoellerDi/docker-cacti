@@ -51,13 +51,17 @@ RUN \
         sendmail mariadb-devel which && \
     yum clean all && \
     \
+    echo "----------------------------------------------------------" && \
     echo "Download, extracting and installing Cacti files to /cacti." && \
+    echo "----------------------------------------------------------" && \
     mkdir /cacti_install && \
     curl -L -o /cacti_install/cacti-${CACTI_VERSION}.tgz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
     mkdir -p /cacti && \
     tar zxvf /cacti_install/cacti-${CACTI_VERSION}.tgz -C /cacti --strip-components=1 && \
     \
+    echo "----------------------------------------------------------" && \
     echo "Download, extracting and installing Spine files to /spine." && \
+    echo "----------------------------------------------------------" && \
     curl -L -o /tmp/spine-${CACTI_VERSION}.tgz https://github.com/Cacti/spine/archive/release/${CACTI_VERSION}.tar.gz && \
     mkdir -p /tmp/spine && \
     mkdir -p /spine   && \
@@ -68,10 +72,14 @@ RUN \
     chmod +s /spine/bin/spine && \
     rm -rf /tmp/spine && \
     \
+    echo "------------------------------------------------------------------------" && \
     echo "Fix cron issues - https://github.com/CentOS/CentOS-Dockerfiles/issues/31" && \
+    echo "------------------------------------------------------------------------" && \
     sed -i '/session required pam_loginuid.so/d' /etc/pam.d/crond && \
     \
+    echo "----------" && \
     echo "misc setup" && \
+    echo "----------" && \
     echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
 
 ## --- SERVICE CONFIGS ---
