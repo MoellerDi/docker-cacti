@@ -24,10 +24,6 @@ ENV \
     PHP_MEMORY_LIMIT=800M \
     PHP_MAX_EXECUTION_TIME=60
 
-## --- SUPPORTING FILES ---
-#COPY cacti /cacti_install
-
-
 ## --- SCRIPTS ---
 COPY upgrade.sh /upgrade.sh
 COPY restore.sh /restore.sh
@@ -55,9 +51,10 @@ RUN \
     echo "Download, extracting and installing Cacti files to /cacti." && \
     echo "----------------------------------------------------------" && \
     mkdir /cacti_install && \
-    curl -L -o /cacti_install/cacti-${CACTI_VERSION}.tgz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
+    curl -L -o /tmp/cacti-${CACTI_VERSION}.tgz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
     mkdir -p /cacti && \
-    tar zxvf /cacti_install/cacti-${CACTI_VERSION}.tgz -C /cacti --strip-components=1 && \
+    tar zxvf /tmp/cacti-${CACTI_VERSION}.tgz -C /cacti --strip-components=1 && \
+    rm -f /tmp/cacti-${CACTI_VERSION}.tgz && \
     \
     echo "----------------------------------------------------------" && \
     echo "Download, extracting and installing Spine files to /spine." && \
