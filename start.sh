@@ -18,14 +18,14 @@ if [ ! -f /cacti/install.lock ]; then
     # THIS WAS IN DOCKER-FILE
     # CACTI BASE INSTALL
     echo "$(date +%F_%R) [New Install] Extracting and installing Cacti files to /cacti."
-    tar -xf /cacti_install/cacti-1*.tar.gz -C /tmp
+    tar zxf /cacti_install/cacti-1*.tar.gz -C /tmp
     mv /tmp/cacti-1*/* /cacti/
 
     # SPINE BASE INSTALL
     echo "$(date +%F_%R) [New Install] Extracting and installing Spine files to /spine."
-    tar -xf /cacti_install/cacti-spine-*.tar.gz -C /tmp
+    tar zxf /cacti_install/cacti-spine-*.tar.gz -C /tmp
     cd /tmp/cacti-spine-* && \
-        ./bootstrap && \
+       ./bootstrap && \
        ./configure --prefix=/spine && make && make install && \
        chown root:root /spine/bin/spine && \
        chmod +s /spine/bin/spine
