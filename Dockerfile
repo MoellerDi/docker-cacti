@@ -38,14 +38,22 @@ RUN \
         autoconf automake gcc gzip help2man libtool make net-snmp-devel \
         m4 libmysqlclient-devel libmysqlclient openssl-devel dos2unix wget \
         sendmail mariadb-devel which && \
-    yum clean all && \
-    mkdir -p /cacti_install && \
+    yum clean all
+
+## --- SCRIPTS ---
+COPY upgrade.sh /upgrade.sh
+COPY restore.sh /restore.sh
+COPY backup.sh /backup.sh
+RUN \
+    chmod +x /upgrade.sh && \
+    chmod +x /restore.sh && \
+    chmod +x /backup.sh  && \
+    mkdir /backups && \
+    mkdir /cacti   && \
+    mkdir /spine   && \
+    mkdir /cacti_install && \
     curl -L -o /cacti_install/cacti-${CACTI_VERSION}.tar.gz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
     curl -L -o /cacti_install/spine-${CACTI_VERSION}.tar.gz https://github.com/Cacti/spine/archive/release/${CACTI_VERSION}.tar.gz
-
-## --- CRON ---
-# Fix cron issues - https://github.com/CentOS/CentOS-Dockerfiles/issues/31
-RUN sed -i '/session required pam_loginuid.so/d' /etc/pam.d/crond
 
 ## --- SERVICE CONFIGS ---
 COPY configs /template_configs
@@ -55,16 +63,9 @@ COPY plugins /cacti_install/plugins
 COPY templates /templates
 COPY settings /settings
 
-## --- SCRIPTS ---
-COPY upgrade.sh /upgrade.sh
-RUN chmod +x /upgrade.sh
-COPY restore.sh /restore.sh
-RUN chmod +x /restore.sh
-COPY backup.sh /backup.sh
-RUN chmod +x /backup.sh
-RUN mkdir /backups
-RUN mkdir /cacti
-RUN mkdir /spine
+## --- CRON ---
+# Fix cron issues - https://github.com/CentOS/CentOS-Dockerfiles/issues/31
+RUN sed -i '/session required pam_loginuid.so/d' /etc/pam.d/crond
 
 ## -- MISC SETUP --
 RUN echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
