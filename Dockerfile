@@ -1,5 +1,5 @@
 FROM centos:7
-#MAINTAINER Sean Cline <smcline06@gmail.com>
+MAINTAINER nobody <nobody@nowhere.com>
 
 ## --- ENV ---
 ENV \
