@@ -39,6 +39,7 @@ RUN \
         m4 libmysqlclient-devel libmysqlclient openssl-devel dos2unix wget \
         sendmail mariadb-devel which && \
     yum clean all && \
+    mkdir -p /cacti_install && \
     curl -L -o /cacti_install/cacti-${CACTI_VERSION}.tar.gz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
     curl -L -o /cacti_install/spine-${CACTI_VERSION}.tar.gz https://github.com/Cacti/spine/archive/release/${CACTI_VERSION}.tar.gz
 
