@@ -51,7 +51,6 @@ RUN \
     echo "----------------------------------------------------------" && \
     echo "Download, extracting and installing Cacti files to /cacti." && \
     echo "----------------------------------------------------------" && \
-    mkdir /cacti_install && \
     curl -L -o /tmp/cacti-${CACTI_VERSION}.tgz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
     mkdir -p /cacti && \
     tar zxvf /tmp/cacti-${CACTI_VERSION}.tgz -C /cacti --strip-components=1 && \
