@@ -25,9 +25,10 @@ ENV \
     PHP_MAX_EXECUTION_TIME=60
 
 ## --- SCRIPTS ---
-COPY upgrade.sh /upgrade.sh
-COPY restore.sh /restore.sh
-COPY backup.sh /backup.sh
+#COPY upgrade.sh /upgrade.sh
+#COPY restore.sh /restore.sh
+#COPY backup.sh /backup.sh
+COPY container-files /
 ## --- CACTI ---
 
 RUN \
@@ -80,15 +81,15 @@ RUN \
     echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
 
 ## --- SERVICE CONFIGS ---
-COPY configs /template_configs
+#COPY configs /template_configs
 
 ## --- SETTINGS/EXTRAS ---
-COPY plugins /cacti_install/plugins
-COPY templates /templates
-COPY settings /settings
+#COPY plugins /cacti_install/plugins
+#COPY templates /templates
+#COPY settings /settings
 
 ## --- Start ---
-COPY start.sh /start.sh
+#COPY start.sh /start.sh
 CMD ["/start.sh"]
 
 EXPOSE 80 443
