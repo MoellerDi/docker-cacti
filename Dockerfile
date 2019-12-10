@@ -28,8 +28,9 @@ ENV \
 #COPY upgrade.sh /upgrade.sh
 #COPY restore.sh /restore.sh
 #COPY backup.sh /backup.sh
-COPY container-files /
+
 ## --- CACTI ---
+COPY container-files /
 
 RUN \
     chmod +x /upgrade.sh && \
@@ -37,6 +38,9 @@ RUN \
     chmod +x /backup.sh  && \
     mkdir /backups && \
     \
+    echo "-------------------------------" && \
+    echo "yum - install & update package." && \
+    echo "-------------------------------" && \
     rpm --rebuilddb && yum clean all && \
     yum update -y && \
     yum install -y \
