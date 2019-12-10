@@ -1,8 +1,31 @@
 FROM centos:7
-MAINTAINER Sean Cline <smcline06@gmail.com>
+#MAINTAINER Sean Cline <smcline06@gmail.com>
+
+## --- ENV ---
+ENV \
+    CACTI_VERSION=1.2.8 \
+    DB_NAME=cacti \
+    DB_USER=cactiuser \
+    DB_PASS=cactipassword \
+    DB_HOST=localhost \
+    DB_PORT=3306 \
+    RDB_NAME=cacti \
+    RDB_USER=cactiuser \
+    RDB_PASS=cactipassword \
+    RDB_HOST=localhost \
+    RDB_PORT=3306 \
+    BACKUP_RETENTION=7 \
+    BACKUP_TIME=0 \
+    SNMP_COMMUNITY=public \
+    REMOTE_POLLER=0 \
+    INITIALIZE_DB=0 \
+    INITIALIZE_INFLUX=0 \
+    TZ=UTC \
+    PHP_MEMORY_LIMIT=800M \
+    PHP_MAX_EXECUTION_TIME=60
 
 ## --- SUPPORTING FILES ---
-COPY cacti /cacti_install
+#COPY cacti /cacti_install
 
 ## --- CACTI ---
 RUN \
@@ -15,7 +38,9 @@ RUN \
         autoconf automake gcc gzip help2man libtool make net-snmp-devel \
         m4 libmysqlclient-devel libmysqlclient openssl-devel dos2unix wget \
         sendmail mariadb-devel which && \
-    yum clean all
+    yum clean all && \
+    curl -L -o /cacti_install/cacti-${CACTI_VERSION}.tar.gz https://github.com/Cacti/cacti/archive/release/${CACTI_VERSION}.tar.gz && \
+    curl -L -o /cacti_install/spine-${CACTI_VERSION}.tar.gz https://github.com/Cacti/spine/archive/release/${CACTI_VERSION}.tar.gz
 
 ## --- CRON ---
 # Fix cron issues - https://github.com/CentOS/CentOS-Dockerfiles/issues/31
@@ -42,28 +67,6 @@ RUN mkdir /spine
 
 ## -- MISC SETUP --
 RUN echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
-
-## --- ENV ---
-ENV \
-    DB_NAME=cacti \
-    DB_USER=cactiuser \
-    DB_PASS=cactipassword \
-    DB_HOST=localhost \
-    DB_PORT=3306 \
-    RDB_NAME=cacti \
-    RDB_USER=cactiuser \
-    RDB_PASS=cactipassword \
-    RDB_HOST=localhost \
-    RDB_PORT=3306 \
-    BACKUP_RETENTION=7 \
-    BACKUP_TIME=0 \
-    SNMP_COMMUNITY=public \
-    REMOTE_POLLER=0 \
-    INITIALIZE_DB=0 \
-    INITIALIZE_INFLUX=0 \
-    TZ=UTC \
-    PHP_MEMORY_LIMIT=800M \
-    PHP_MAX_EXECUTION_TIME=60
 
 ## --- Start ---
 COPY start.sh /start.sh
