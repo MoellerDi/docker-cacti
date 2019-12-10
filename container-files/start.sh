@@ -102,10 +102,6 @@ if [ ! -f /cacti/install.lock ]; then
         php -q /cacti/cli/import_template.php --filename=$filename > /dev/null
     done
 
-    # CLEANUP
-    echo "$(date +%F_%R) [New Install] Removing temp Cacti and Spine installation files."
-    rm -rf /tmp/*
-
     # create lock file so this is not re-ran on restart
     touch /cacti/install.lock
     echo "$(date +%F_%R) [New Install] Creating lock file, db setup complete."
