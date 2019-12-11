@@ -38,9 +38,9 @@ RUN \
     chmod +x /backup.sh  && \
     mkdir /backups && \
     \
-    echo "-------------------------------" && \
-    echo "yum - install & update package." && \
-    echo "-------------------------------" && \
+    echo "-------------------------------------------" && \
+    echo "yum - install & update all needed packages." && \
+    echo "-------------------------------------------" && \
     rpm -Uvh \
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
@@ -56,6 +56,11 @@ RUN \
         m4 libmysqlclient-devel libmysqlclient openssl-devel dos2unix wget \
         sendmail mariadb-devel which python-pip && \
     yum clean all && \
+    \
+    echo "----------------------------------------------" && \
+    echo "python - install & update all needed packages." && \
+    echo "----------------------------------------------" && \
+    pip install simplejson && \
     \
     echo "----------------------------------------------------------" && \
     echo "Download, extracting and installing Cacti files to /cacti." && \
