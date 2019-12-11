@@ -1,4 +1,4 @@
-# Cacti v1.2.x Docker Container
+# Cacti v1.2.8 + PHP 7.4 Docker Container
 
 ##### Github Repo: https://github.com/MoellerDi/docker-cacti
 ##### Dockerhub Repo: https://hub.docker.com/r/MoellerDi/cacti/
