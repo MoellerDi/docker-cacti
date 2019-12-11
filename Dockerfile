@@ -41,7 +41,12 @@ RUN \
     echo "-------------------------------" && \
     echo "yum - install & update package." && \
     echo "-------------------------------" && \
+    rpm -Uvh \
+        https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+        https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     rpm --rebuilddb && yum clean all && \
+    yum install yum-utils && \
+    yum-config-manager --enable remi-php74 && \
     yum update -y && \
     yum install -y \
         rrdtool net-snmp net-snmp-utils cronie php-ldap php-devel mysql php \
