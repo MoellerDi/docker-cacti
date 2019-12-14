@@ -1,131 +1,92 @@
 #!/usr/bin/python
 
-import sys, getopt
 import simplejson as json
 import urllib2
+import re, sys
+import telnetlib
 
-def main(argv):
-   host = ''
-   objectid = ''
-   try:
-      opts, args = getopt.getopt(argv,"hH:o:",["host=","oobjectid="])
-   except getopt.GetoptError:
-      print 'test.py -H <host> -o <objectid>'
-      sys.exit(2)
-   for opt, arg in opts:
-      if opt == '-h':
-         print 'test.py -H <host> -o <objectid>'
-         sys.exit()
-      elif opt in ("-H", "--host"):
-         host = arg
-      elif opt in ("-o", "--objectid"):
-         objectid = arg
-   #print 'Host file is "', host
-   #print 'ObjectID file is "', objectid
+class fhemdevice:
+  def __init__(self, ip, port):
+    self.ip = ip
+    self.port = port
+    self.output = {}
 
-   url = "http://" + host + "/fhem?XHR=1&cmd=jsonlist2+serialNr=" + objectid
-   #print url
+  def execute(self, cmd, fhemdev):
+    ret = ""
+    try:
+      tn = telnetlib.Telnet()
+      if DEBUG: print ("Connect to fhem %s:%s" % (str(self.ip), str(self.port)))
+      tn.open(self.ip, self.port)
+      tn.write("%s %s\n" % (str(cmd), str(fhemdev)))
+      tn.write("quit\n")
+      ret = tn.read_all()
+      tn.close()
+      ret = re.sub(r'Bye...', '',str(ret))
+    except:
+      if DEBUG: print "telnet exception, could not connect to fhem instance"
+    return ret
 
-   data = urllib2.urlopen(url)
-   j = json.load(data)
+  def getjson(self, fhemdev):
+    self.FHEMJsonRes = json.loads(self.execute('jsonlist2', fhemdev))
 
-   #print type(j["Results"][0])
-   #print j["Results"][0]["Attributes"]
-   #print j["Results"][0]["Attributes"]["model"]
+  def printjson(self):
+    return self.FHEMJsonRes
 
-   if "model" in j["Results"][0]["Attributes"]:
-   	model = j["Results"][0]["Attributes"]["model"]
-   if "subType" in j["Results"][0]["Attributes"]:
-	subType = j["Results"][0]["Attributes"]["subType"]
+  def getvalue(self, item, out_as):
+    if item in self.FHEMJsonRes["Results"][0]["Readings"]:
+      self.output[out_as] = self.FHEMJsonRes["Results"][0]["Readings"][item]["Value"]
 
-   #print model 
-   #print subType
+  def printout(self):
+    res = ""
+    for key in self.output:
+      if self.output[key] == "null":
+        self.output[key] = 0
+      res += key + ":" + "%.2f" % float(self.output[key]) + " "
+    self.output = {}
+    return res
 
-   info = {}
+##############################
 
-   ############################
-   #print j["Results"][0]["Readings"]
+def get_by_serial(fhemdev):
+  fhem.getjson(fhemdev)
+  fhem.getvalue('batteryLevel', 'BATTERY_STATE')
+  fhem.getvalue('ValvePosition', 'VALVE_STATE')
+  fhem.getvalue('actuator', 'VALVE_STATE')
+  fhem.getvalue('desired-temp', 'SET_TEMPERATURE')
+  fhem.getvalue('measured-temp', 'ACTUAL_TEMPERATURE')
+  fhem.getvalue('humidity', 'HUMIDITY')
+  fhem.getvalue('temperature', 'ACTUAL_TEMPERATURE')
+  fhem.getvalue('UR_TEMPERATURE_T1', 'TEMPERATURE_SENSOR1')
+  fhem.getvalue('UR_TEMPERATURE_T2', 'TEMPERATURE_SENSOR2')
+  fhem.getvalue('dewpoint', 'DEWPOINT')
+  fhem.getvalue('rssi', 'RSSI_STATE')
+  return fhem.printout()
 
-   item = "batteryLevel"
-   out_as = "BATTERY_STATE"
-   if item in j["Results"][0]["Readings"]:
-	info[out_as] = j["Results"][0]["Readings"][item]["Value"]
+def get_by_name(fhemdev):
+  return fhem.execute('getstate', fhemdev)
 
-   item = "ValvePosition"
-   out_as = "VALVE_STATE"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "actuator"
-   out_as = "VALVE_STATE"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "desired-temp"
-   out_as = "SET_TEMPERATURE"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-   
-   item = "measured-temp"
-   out_as = "ACTUAL_TEMPERATURE"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]   
-
-   item = "humidity"
-   out_as = "HUMIDITY"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "temperature"
-   out_as = "ACTUAL_TEMPERATURE"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "UR_TEMPERATURE_T1"
-   out_as = "TEMPERATURE_SENSOR1"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "UR_TEMPERATURE_T2"
-   out_as = "TEMPERATURE_SENSOR2"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "dewpoint"
-   out_as = "DEWPOINT"
-   if item in j["Results"][0]["Readings"]:
-        info[out_as] = j["Results"][0]["Readings"][item]["Value"]
-
-   item = "rssi"
-   out_as = "RSSI_STATE"
-   if "helper" in j["Results"][0]:
-	if "rssi" in j["Results"][0]["helper"]:
-		if "at_HMLAN0" in j["Results"][0]["helper"]["rssi"]:
-			info[out_as] = j["Results"][0]["helper"]["rssi"]["at_HMLAN0"]["avg"]
-
-   #print info
-
-   ############################
-#   elif type == "VARDP":
-#
-#        item = "VALVE"
-#        data = urllib2.urlopen(url)
-#        j = json.load(data)
-#        info[item] = j["value"]
-
-
-   #####################
-   temp = ""
-   for key in info:
-	if info[key] == "null":
-		info[key] = 0
-
-        temp += key + ":" + "%.2f" % float(info[key]) + " "
-        #temp += key + ":" + info[key] + " "
-   print temp
-   #####################
-
-
+#################################
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+  DEBUG = 0
+  host = sys.argv[1]
+  port = sys.argv[2]
+  action = sys.argv[3]
+  fhem = fhemdevice(host,port)
+
+  if 'get_by_serial' in action:
+    try:
+      fhemdev = 'serialNr=' + sys.argv[4]
+    except IndexError:
+      print('get_by_serial function needs an argument to know what it should return')
+      exit()
+    print get_by_serial(fhemdev)
+  elif 'get_by_name' in action:
+    try:
+      fhemdev = sys.argv[4]
+    except IndexError:
+      print('get_by_name function needs an argument to know what it should return')
+      exit()
+    print get_by_name(fhemdev)
+  else:
+    print '''fhem.py <fhem-host> <fhem-telnet.port> get_by_serial <device-serial> \nfhem.py <fhem-host> <fhem-telnet.port> get_by_name <device-name>'''
