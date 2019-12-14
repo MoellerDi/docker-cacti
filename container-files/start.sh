@@ -80,7 +80,7 @@ if [ ! -f /cacti/install.lock ]; then
 
     # fresh install db merge & database default collation
     echo "$(date +%F_%R) [New Install] Merging vanilla cacti.sql file to database."
-    mysql -h ${DB_HOST} --port=${DB_PORT} -u${DB_USER} -p${DB_PASS} -e "ALTER DATABASE cacti CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    mysql -h ${DB_HOST} --port=${DB_PORT} -u${DB_USER} -p${DB_PASS} -e "ALTER DATABASE ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
     mysql -h ${DB_HOST} --port=${DB_PORT} -u${DB_USER} -p${DB_PASS} ${DB_NAME} < /cacti/cacti.sql
 
     echo "$(date +%F_%R) [New Install] Installing supporting template files."
