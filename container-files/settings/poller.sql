@@ -3,7 +3,7 @@
 --
 
 -- How often to poll data in seconds
-REPLACE INTO `%DB_NAME%`.`settings` (`name`, `value`) VALUES('poller_interval', '60');
+REPLACE INTO `%DB_NAME%`.`settings` (`name`, `value`) VALUES('poller_interval', '300');
 
 -- How often the cronjob is set to run
 REPLACE INTO `%DB_NAME%`.`settings` (`name`, `value`) VALUES('cron_interval', '300');
