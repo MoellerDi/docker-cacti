@@ -19,7 +19,7 @@ ENV \
     SNMP_COMMUNITY=public \
     REMOTE_POLLER=0 \
     INITIALIZE_DB=0 \
-    TZ=UTC \
+    TZ=Europe/Berlin \
     PHP_MEMORY_LIMIT=800M \
     PHP_MAX_EXECUTION_TIME=60
 
