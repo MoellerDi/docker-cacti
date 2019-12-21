@@ -15,21 +15,6 @@ sed -i "s/^\(max_execution_time =\).*/\1 ${PHP_MAX_EXECUTION_TIME}/" /etc/php.in
 if [ ! -f /cacti/install.lock ]; then
     echo "$(date +%F_%R) [New Install] Lock file does not exist - new install."
 
-    # THIS WAS IN DOCKER-FILE
-    # CACTI BASE INSTALL
-    ##echo "$(date +%F_%R) [New Install] Extracting and installing Cacti files to /cacti."
-    ##tar zxf /cacti_install/cacti-1*.tar.gz -C /tmp
-    ##mv /tmp/cacti-1*/* /cacti/
-
-    # SPINE BASE INSTALL
-    ##echo "$(date +%F_%R) [New Install] Extracting and installing Spine files to /spine."
-    ##tar zxf /cacti_install/cacti-spine-*.tar.gz -C /tmp
-    ##cd /tmp/cacti-spine-* && \
-    ##   ./bootstrap && \
-    ##   ./configure --prefix=/spine && make && make install && \
-    ##   chown root:root /spine/bin/spine && \
-    ##   chmod +s /spine/bin/spine
-
     # BASE CONFIGS
     echo "$(date +%F_%R) [New Install] Copying templated configurations to Spine, Apache, and Cacti."
     cp /template_configs/spine.conf /spine/etc
@@ -83,10 +68,6 @@ if [ ! -f /cacti/install.lock ]; then
     mysql -h ${DB_HOST} --port=${DB_PORT} -u${DB_USER} -p${DB_PASS} -e "ALTER DATABASE ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
     mysql -h ${DB_HOST} --port=${DB_PORT} -u${DB_USER} -p${DB_PASS} ${DB_NAME} < /cacti/cacti.sql
 
-    echo "$(date +%F_%R) [New Install] Installing supporting template files."
-    cp -r /templates/resource/* /cacti/resource 
-    cp -r /templates/scripts/* /cacti/scripts
-
     echo "$(date +%F_%R) [New Install] Installing plugins."
     cp -r /cacti_install/plugins/* /cacti/plugins
 
@@ -96,6 +77,10 @@ if [ ! -f /cacti/install.lock ]; then
         mysql -h ${DB_HOST} --port=${DB_PORT} -u${DB_USER} -p${DB_PASS} ${DB_NAME} < $filename
     done
 
+    echo "$(date +%F_%R) [New Install] Installing supporting template files."
+    cp -r /templates/resource/* /cacti/resource 
+    cp -r /templates/scripts/* /cacti/scripts
+    
     # install additional templates
     for filename in /templates/*.xml; do
         echo "$(date +%F_%R) [New Install] Installing template file $filename"
