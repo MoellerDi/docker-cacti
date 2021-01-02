@@ -23,11 +23,6 @@ ENV \
     PHP_MEMORY_LIMIT=800M \
     PHP_MAX_EXECUTION_TIME=60
 
-## --- SCRIPTS ---
-#COPY upgrade.sh /upgrade.sh
-#COPY restore.sh /restore.sh
-#COPY backup.sh /backup.sh
-
 ## --- CACTI ---
 COPY container-files /
 
@@ -92,16 +87,7 @@ RUN \
     echo "----------" && \
     echo "ServerName localhost" > /etc/httpd/conf.d/fqdn.conf
 
-## --- SERVICE CONFIGS ---
-#COPY configs /template_configs
-
-## --- SETTINGS/EXTRAS ---
-#COPY plugins /cacti_install/plugins
-#COPY templates /templates
-#COPY settings /settings
-
 ## --- Start ---
-#COPY start.sh /start.sh
 CMD ["/start.sh"]
-
+VOLUME /cacti/rra
 EXPOSE 80 443
