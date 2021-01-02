@@ -3,7 +3,7 @@ MAINTAINER nobody <nobody@nowhere.com>
 
 ## --- ENV ---
 ENV \
-    CACTI_VERSION=1.2.8 \
+    CACTI_VERSION=1.2.16 \
     DB_NAME=cacti \
     DB_USER=cactiuser \
     DB_PASS=cactipassword \
